@@ -1,0 +1,2 @@
+# Generate Keystore with self-signed cert (use "localhost" as CN)
+keytool -genkey -keyalg RSA -alias selfsigned -keystore default.p12 -storetype PKCS12 -storepass changeit -v alidity 10000 -keysize 2048
