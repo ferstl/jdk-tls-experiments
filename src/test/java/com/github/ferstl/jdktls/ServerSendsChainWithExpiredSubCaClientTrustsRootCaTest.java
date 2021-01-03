@@ -18,8 +18,7 @@ class ServerSendsChainWithExpiredSubCaClientTrustsRootCaTest extends AbstractWeb
     assertThatThrownBy(this::makeRequest)
         .getCause()
         .isInstanceOf(SSLHandshakeException.class)
-        .hasMessageContaining("validity check failed");
-
-    // TODO: Better check for "Caused by: java.security.cert.CertificateExpiredException: NotAfter: Sat Jan 02 01:00:00 CET 2021"
+        .hasMessageContaining("validity check failed")
+        .hasStackTraceContaining("java.security.cert.CertificateExpiredException: NotAfter");
   }
 }
