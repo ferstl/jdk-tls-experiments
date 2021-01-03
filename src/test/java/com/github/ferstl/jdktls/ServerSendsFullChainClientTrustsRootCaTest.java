@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ServerSendsFullChainClientTrustsRootCaTest extends AbstractWebAppTest {
 
   @Test
-  @DisplayName("Server sends full certificate chain, client trusts Root CA only")
+  @DisplayName("Server sends full certificate chain, client trusts Root CA only -> OK")
   void test() {
     assertEquals("Test", makeRequest());
   }
