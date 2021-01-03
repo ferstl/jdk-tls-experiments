@@ -20,6 +20,7 @@ openssl ca -config conf/root-ca.conf -selfsign -keyfile private/root-ca.key -sta
 # Sub CA
 openssl req -new -config conf/sub-ca.conf -out sub-ca.csr -keyout private/sub-ca.key
 openssl ca -config conf/root-ca.conf -in sub-ca.csr -out sub-ca.crt -days 90000 -extensions sub_ca_ext
+openssl ca -config conf/root-ca.conf -in sub-ca.csr -out sub-ca.crt -startdate 20210101000000Z -enddate 20210102000000Z -extensions sub_ca_ext
 
 # Server Certificates
 # Country (GB) and company name (Example) must match with the Sub CA
