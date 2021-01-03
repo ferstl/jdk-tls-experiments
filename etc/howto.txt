@@ -1,2 +1,30 @@
+# Password is always "changeit"
+
 # Generate Keystore with self-signed cert (use "localhost" as CN)
 keytool -genkey -keyalg RSA -alias selfsigned -keystore default.p12 -storetype PKCS12 -storepass changeit -v alidity 10000 -keysize 2048
+
+mkdir certs db private
+touch db/index
+openssl rand -hex 16 > db/serial
+echo 1001 > db/crlnumber
+
+# Create CSR
+openssl req -new -config conf/root-ca.conf -out root-ca.csr -keyout private/root-ca.key
+
+# Create CA
+openssl ca -config conf/root-ca.conf -selfsign -keyfile private/root-ca.key -startdate 20210101000000Z -days 90000 -in root-ca.csr -out root-ca.crt -extensions ca_ext
+
+# Create expired CA
+openssl ca -config conf/root-ca.conf -selfsign -keyfile private/root-ca.key -startdate 20210101000000Z -enddate 20210102000000Z -in root-ca.csr -out expired-root-ca.crt -extensions ca_ext
+
+# Sub CA
+openssl req -new -config conf/sub-ca.conf -out sub-ca.csr -keyout private/sub-ca.key
+openssl ca -config conf/root-ca.conf -in sub-ca.csr -out sub-ca.crt -days 90000 -extensions sub_ca_ext
+
+# Server Certificates
+# Country (GB) and company name (Example) must match with the Sub CA
+openssl genrsa -out certs/server.key 2048
+openssl req -new -key certs/server.key -out certs/server.csr
+cd ca/
+openssl ca -config conf/sub-ca.conf -in ../certs/server.csr -out ../certs/server.crt -extensions server_ext -startdate 20210101000000Z -days 90000
+openssl ca -config conf/sub-ca.conf -in ../certs/server.csr -out ../certs/expired-server.crt -extensions server_ext -startdate 20210101000000Z -enddate 20210102000000Z
